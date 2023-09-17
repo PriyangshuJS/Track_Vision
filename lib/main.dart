@@ -2,6 +2,8 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:track_vision/screen/login_screen.dart';
 
+import 'screen/navigator.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -19,16 +21,17 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: AnimatedSplashScreen(
-          duration: 2000,
-          splash: Image.asset(
-            'asset/icon.png',
-            fit: BoxFit.cover,
-          ),
-          nextScreen: LoginScreen(),
-          splashTransition: SplashTransition.fadeTransition,
-          //pageTransitionType: PageTransitionType.scale,
-          backgroundColor: Colors.black),
+      home: HomeScreen(),
     );
   }
 }
+// AnimatedSplashScreen(
+//           duration: 2000,
+//           splash: Image.asset(
+//             'asset/icon.png',
+//             fit: BoxFit.cover,
+//           ),
+//           nextScreen: HomeScreen(),
+//           splashTransition: SplashTransition.fadeTransition,
+//           //pageTransitionType: PageTransitionType.scale,
+//           backgroundColor: Colors.black),
