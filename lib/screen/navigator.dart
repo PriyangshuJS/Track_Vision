@@ -6,7 +6,8 @@ import '../utils/image_upload_screen.dart';
 import 'profile_sreen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  String userToken;
+  HomeScreen({required this.userToken, super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -24,7 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final pages = <Widget>[
     FirstPage(),
     const UploadScreen(),
-    ProfileScreen(),
+    ProfileScreen(
+        authToken:
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NTBjM2ZjMWY3YzVkMzZlMGE5NjI3M2MiLCJpYXQiOjE2OTUzMDE1NjksImV4cCI6MTY5NTMwNTE2OX0.ZLAL6ZwttlWPAOiF1rbbGUCWbmOPvVPESO69Va_R-78"),
   ];
   @override
   Widget build(BuildContext context) {

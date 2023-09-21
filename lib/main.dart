@@ -1,8 +1,7 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:track_vision/screen/login_screen.dart';
 
-import 'screen/navigator.dart';
+import 'package:track_vision/screen/signup_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,17 +20,17 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: HomeScreen(),
+      home: AnimatedSplashScreen(
+          duration: 2000,
+          splash: Image.asset(
+            'asset/icon.png',
+            fit: BoxFit.cover,
+          ),
+          nextScreen: SignupScreen(),
+          splashTransition: SplashTransition.fadeTransition,
+          //pageTransitionType: PageTransitionType.scale,
+          backgroundColor: Colors.black),
     );
   }
 }
-// AnimatedSplashScreen(
-//           duration: 2000,
-//           splash: Image.asset(
-//             'asset/icon.png',
-//             fit: BoxFit.cover,
-//           ),
-//           nextScreen: HomeScreen(),
-//           splashTransition: SplashTransition.fadeTransition,
-//           //pageTransitionType: PageTransitionType.scale,
-//           backgroundColor: Colors.black),
+//

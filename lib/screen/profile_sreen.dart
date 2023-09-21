@@ -1,6 +1,58 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../config.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
+  final String authToken;
+
+  ProfileScreen({required this.authToken});
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  Map<String, dynamic>? userProfile;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserProfile();
+  }
+
+  Future<void> _loadUserProfile() async {
+    try {
+      final userData = await fetchUserProfile(widget.authToken);
+      setState(() {
+        userProfile = userData;
+      });
+    } catch (error) {
+      // Handle error (e.g., show an error message)
+      print('Error loading user profile: $error');
+    }
+  }
+
+  Future<Map<String, dynamic>> fetchUserProfile(String authToken) async {
+    try {
+      final response = await http.get(
+        Uri.parse(registration), // Replace with your actual backend URL
+        headers: {
+          "Authorization": "Bearer $authToken"
+        }, // Send the JWT token for authentication
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> userData = json.decode(response.body);
+        return userData;
+      } else {
+        throw Exception('Failed to fetch user profile');
+      }
+    } catch (error) {
+      throw error.toString();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -12,6 +64,7 @@ class ProfileScreen extends StatelessWidget {
           fit: BoxFit.cover,
         ),
 
+        // Profile Avatar
         Container(
           height: MediaQuery.of(context).size.height / 3,
           width: MediaQuery.of(context).size.width,
@@ -19,8 +72,8 @@ class ProfileScreen extends StatelessWidget {
           child: Center(
             child: CircleAvatar(
               radius: 90,
-              backgroundImage: NetworkImage(
-                  "https://cdn.pixabay.com/photo/2020/06/21/15/54/bohemian-5325610_1280.png"),
+              backgroundImage: AssetImage('asset/profile.png'),
+              // You can replace this with the user's profile picture from the userProfile data
             ),
           ),
         ),
@@ -36,22 +89,22 @@ class ProfileScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'UserName:',
+                      'Name: ${userProfile?['username'] ?? 'Loading...'}',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 5),
+                    SizedBox(height: 10),
                     Text(
-                      'Email',
+                      'Email: ${userProfile?['email'] ?? 'Loading...'}',
                       style: TextStyle(
                         fontSize: 16,
                       ),
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'Maps:',
+                      'Map History:',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -62,14 +115,13 @@ class ProfileScreen extends StatelessWidget {
                         itemCount:
                             10, // Replace with the actual number of posts
                         itemBuilder: (context, index) {
-                          // Replace with your post item widget
-                          return ListTile(
-                            title: Text('Map1 ${index + 1}'),
-                            // Add post content and actions here
-                          );
+                          // Your list item builder here
+                          // Example: Display map history based on userProfile data
+                          // userProfile?['mapHistory'][index]['mapName']
+                          // userProfile?['mapHistory'][index]['date']
                         },
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),

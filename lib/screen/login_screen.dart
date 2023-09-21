@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:track_vision/screen/navigator.dart';
 import 'package:track_vision/screen/signup_screen.dart';
 import 'package:track_vision/widget/button.dart';
+import 'package:http/http.dart' as http;
+
+import '../config.dart';
 
 void main() {
   runApp(MyApp());
@@ -23,6 +29,39 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _validate = false;
+  Future<void> loginUser() async {
+    try {
+      if (_emailController.text.isNotEmpty &&
+          _passwordController.text.isNotEmpty) {
+        var resBody = {
+          "email": _emailController.text,
+          "password": _passwordController.text,
+        };
+
+        var response = await http.post(
+          Uri.parse(registration), // Replace with your actual backend URL
+          headers: {"Content-Type": "application/json"},
+          body: json.encode(resBody),
+        );
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        final String token = jsonResponse['token'];
+        print("RES Token - ${token}");
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomeScreen(userToken: token),
+            ),
+          );
+        } else {
+          // Handle other status codes or errors here
+          print('Registration failed. Status code: ${response.statusCode}');
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +144,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  InkWell(onTap: null, child: TButton(buttonTask: "Login")),
+                  InkWell(
+                    onTap: () {
+                      loginUser();
+                    },
+                    child: const TButton(buttonTask: "Login"),
+                  ),
                   const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
